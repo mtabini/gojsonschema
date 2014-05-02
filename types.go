@@ -47,6 +47,7 @@ const (
 	KEY_EXCLUSIVE_MAXIMUM     = "exclusiveMaximum"
 	KEY_MIN_LENGTH            = "minLength"
 	KEY_MAX_LENGTH            = "maxLength"
+	KEY_FORMAT                = "format"
 	KEY_PATTERN               = "pattern"
 	KEY_MIN_PROPERTIES        = "minProperties"
 	KEY_MAX_PROPERTIES        = "maxProperties"

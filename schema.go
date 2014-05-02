@@ -74,6 +74,7 @@ type jsonSchema struct {
 	minLength *int
 	maxLength *int
 	pattern   *regexp.Regexp
+	format    *string
 
 	// validation : object
 	minProperties *int

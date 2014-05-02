@@ -523,6 +523,17 @@ func (v *jsonSchema) validateString(currentSchema *jsonSchema, value interface{}
 		}
 	}
 
+	// format:
+	if currentSchema.format != nil {
+		// Force to number, that's the only format we recognize.
+
+		if value, err := strconv.ParseFloat(value.(string), 64); err != nil {
+			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_MUST_BE_OF_TYPE_X, "numeric string"))
+		} else {
+			v.validateNumber(currentSchema, value, result, context)
+		}
+	}
+
 	result.incrementScore()
 }
 

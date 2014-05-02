@@ -361,6 +361,15 @@ func (d *JsonSchemaDocument) parseSchema(documentNode interface{}, currentSchema
 		}
 	}
 
+	if existsMapKey(m, KEY_FORMAT) {
+		if isKind(m[KEY_FORMAT], reflect.String) {
+			formatValue := m[KEY_FORMAT].(string)
+			currentSchema.format = &formatValue
+		} else {
+			return errors.New("format must be a string")
+		}
+	}
+
 	if existsMapKey(m, KEY_EXCLUSIVE_MINIMUM) {
 		if isKind(m[KEY_EXCLUSIVE_MINIMUM], reflect.Bool) {
 			if currentSchema.minimum == nil {
