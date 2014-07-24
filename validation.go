@@ -524,14 +524,22 @@ func (v *jsonSchema) validateString(currentSchema *jsonSchema, value interface{}
 		}
 	}
 
-	// format:
-	if currentSchema.format != nil {
+	// format: number
+	if currentSchema.format != nil && *currentSchema.format == "number" {
 		// Force to number, that's the only format we recognize.
 
 		if value, err := strconv.ParseFloat(value.(string), 64); err != nil {
 			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_MUST_BE_OF_TYPE_X, "numeric string"))
 		} else {
 			v.validateNumber(currentSchema, value, result, context)
+		}
+	}
+
+	// format: date-time
+	if currentSchema.format != nil && *currentSchema.format == "date-time" {
+		pattern := regexp.MustCompile(`\A\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z\z`)
+		if !pattern.MatchString(stringValue) {
+			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_DOES_NOT_MATCH_PATTERN, pattern))
 		}
 	}
 
