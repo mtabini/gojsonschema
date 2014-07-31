@@ -537,7 +537,7 @@ func (v *jsonSchema) validateString(currentSchema *jsonSchema, value interface{}
 
 	// format: date-time
 	if currentSchema.format != nil && *currentSchema.format == "date-time" {
-		pattern := regexp.MustCompile(`\A\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z\z`)
+		pattern := regexp.MustCompile(`\A\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z\z`)
 		if !pattern.MatchString(stringValue) {
 			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_DOES_NOT_MATCH_PATTERN, pattern))
 		}
