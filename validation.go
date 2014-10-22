@@ -31,6 +31,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 	"unicode/utf8"
 )
 
@@ -535,11 +536,38 @@ func (v *jsonSchema) validateString(currentSchema *jsonSchema, value interface{}
 		}
 	}
 
+	// format: boolean
+	if currentSchema.format != nil && *currentSchema.format == "boolean" {
+		if value != "true" && value != "false" {
+			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_MUST_BE_OF_TYPE_X, "boolean string (\"true\" or \"false\")"))
+		}
+	}
+
 	// format: date-time
 	if currentSchema.format != nil && *currentSchema.format == "date-time" {
-		pattern := regexp.MustCompile(`\A\d{4}-(?:0[0-9]{1}|1[0-2]{1})-[0-9]{2}T\d{2}:\d{2}:\d{2}(\.\d+)?Z\z`)
-		if !pattern.MatchString(stringValue) {
-			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_DOES_NOT_MATCH_PATTERN, pattern))
+		parsed := false
+
+		formats := []string{
+			time.ANSIC,
+			time.UnixDate,
+			time.RubyDate,
+			time.RFC822,
+			time.RFC822Z,
+			time.RFC850,
+			time.RFC1123,
+			time.RFC1123Z,
+			time.RFC3339,
+			time.RFC3339Nano}
+		for _, format := range formats {
+			_, err := time.Parse(format, stringValue)
+			if err == nil {
+				parsed = true
+				break
+			}
+		}
+
+		if !parsed {
+			result.addError(context, value, fmt.Sprintf(ERROR_MESSAGE_MUST_BE_OF_TYPE_X, "date-time string"))
 		}
 	}
 
