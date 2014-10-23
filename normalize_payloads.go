@@ -19,6 +19,15 @@ func normalizePayloadsRecursive(currentSchema *jsonSchema, currentNode interface
 		return currentNode, nil
 	}
 
+	if len(currentSchema.allOf) > 0 {
+		for _, allOfSchema := range currentSchema.allOf {
+			updatedCurrentNode, err := normalizePayloadsRecursive(allOfSchema, currentNode)
+			if err == nil {
+				currentNode = updatedCurrentNode
+			}
+		}
+	}
+
 	if len(currentSchema.oneOf) > 0 {
 		for _, oneOfSchema := range currentSchema.oneOf {
 			updatedCurrentNode, err := normalizePayloadsRecursive(oneOfSchema, currentNode)
@@ -26,7 +35,6 @@ func normalizePayloadsRecursive(currentSchema *jsonSchema, currentNode interface
 				currentNode = updatedCurrentNode
 			}
 		}
-		return currentNode, nil
 	}
 
 	rValue := reflect.ValueOf(currentNode)
